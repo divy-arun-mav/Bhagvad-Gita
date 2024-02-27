@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhagavad Gita</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #F7E1C5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .card {
+            border: 2px solid #7D1411;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #F2D2A1;
+            width: 300px;
+            overflow: hidden;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card p {
+            margin: 10px;
+            font-size: 14px;
+            color: #3D0C0A;
+        }
+
+        .card .c_no {
+            font-size: 18px;
+            font-weight: bold;
+            color: #7D1411;
+        }
+
+        .card .c_summary {
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container"></div>
+
+    <script>
+        async function getData() {
+            const url = 'https://bhagavad-gita3.p.rapidapi.com/v2/chapters/?limit=18';
+            const options = {
+                method: 'GET',
+                headers: {
+                    'X-RapidAPI-Key': 'f8c08f1481msh4f272c4e9b101bdp127ca0jsn38bed71f62c7',
+                    'X-RapidAPI-Host': 'bhagavad-gita3.p.rapidapi.com'
+                }
+            };
+
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
+
+                data.forEach((item, index) => {
+                    const container = document.createElement('div');
+                    container.className = 'card';
+                    container.innerHTML = `
+                        <p class="c_no">Chapter ${item.chapter_number}</p>
+                        <p class="c_name">${item.name_transliterated}</p>
+                        <p class="c_summary">${item.chapter_summary}</p>
+                        <p class="verses_count">Verses: ${item.verses_count}</p>
+                    `;
+                    document.querySelector('.container').appendChild(container);
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        getData();
+    </script>
+</body>
+
+</html>
