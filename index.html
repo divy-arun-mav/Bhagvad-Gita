@@ -8,72 +8,95 @@
     <style>
 		@import url('https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit:ital@0;1&display=swap');
 
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #F7E1C5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction:column;
-        }
-        
-        h1{
-        	font-size:5vw;
-        	color:#7D1411;
-            font-family: "Tiro Devanagari Sanskrit", serif;
-  			font-weight: 700;
-        }
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F7E1C5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
 
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            max-width: 1200px;
-            width: 100%;
-        }
+h1 {
+    font-size: 5vw;
+    color: #7D1411;
+    font-family: "Tiro Devanagari Sanskrit", serif;
+    font-weight: 700;
+}
 
-        .card {
-            border: 2px solid #7D1411;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background-color: #F2D2A1;
-            width: 300px;
-            overflow: hidden;
-            transition: transform 0.3s;
-            cursor: pointer;
-        }
+.loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #7D1411;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    margin: 50px;
+}
 
-        .card:hover {
-            transform: scale(1.05);
-        }
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
 
-        .card p {
-            margin: 10px;
-            font-size: 14px;
-            color: #3D0C0A;
-        }
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 1200px;
+    width: 100%;
+}
 
-        .card .c_no {
-            font-size: 18px;
-            font-weight: bold;
-            color: #7D1411;
-        }
+.card {
+    border: 2px solid #7D1411;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #F2D2A1;
+    width: 300px;
+    overflow: hidden;
+    transition: transform 0.3s;
+    cursor: pointer;
+}
 
-        .card .c_summary {
-            font-style: italic;
-        }
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card p {
+    margin: 10px;
+    font-size: 14px;
+    color: #3D0C0A;
+}
+
+.card .c_no {
+    font-size: 18px;
+    font-weight: bold;
+    color: #7D1411;
+}
+
+.card .c_summary {
+    font-style: italic;
+}
+
     </style>
 </head>
 
 <body>
-<h1>Bhagvad Gita Chapters Summary</h1>
+    <h1>Bhagvad Gita Chapters Summary</h1>
+    <div class="loader"></div>
     <div class="container"></div>
 
     <script>
         async function getData() {
+            const loader = document.querySelector('.loader');
+            const container = document.querySelector('.container');
             const url = 'https://bhagavad-gita3.p.rapidapi.com/v2/chapters/?limit=18';
             const options = {
                 method: 'GET',
@@ -83,28 +106,37 @@
                 }
             };
 
+            loader.style.display = 'block';
+            container.style.display = 'none';
+
             try {
                 const response = await fetch(url, options);
                 const data = await response.json();
 
                 data.forEach((item, index) => {
-                    const container = document.createElement('div');
-                    container.className = 'card';
-                    container.innerHTML = `
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
                         <p class="c_no">Chapter ${item.chapter_number}</p>
                         <p class="c_name">${item.name_transliterated}</p>
                         <p class="c_summary">${item.chapter_summary}</p>
                         <p class="verses_count">Verses: ${item.verses_count}</p>
                     `;
-                    document.querySelector('.container').appendChild(container);
+                    container.appendChild(card);
                 });
+
+                loader.style.display = 'none';
+                container.style.display = 'flex';
             } catch (error) {
                 console.error(error);
+                loader.style.display = 'none';
+                container.style.display = 'flex';
             }
         }
 
         getData();
     </script>
 </body>
+
 
 </html>
